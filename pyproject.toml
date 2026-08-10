@@ -1,0 +1,31 @@
+[project]
+name = "oil-idr-passthrough"
+version = "0.1.0"
+requires-python = ">=3.11"
+authors = [{ name = "Gilbert Immanuel Hasiholan", email = "gilbertimmanuel13@gmail.com" }]
+dependencies = [
+    "arch>=8.0.0",
+    "fredapi>=0.5.2",
+    "matplotlib>=3.11.1",
+    "numpy>=2.4.6",
+    "pandas>=3.0.5",
+    "plotly>=6.9.0",
+    "pyarrow>=25.0.0",
+    "requests>=2.34.2",
+    "statsmodels>=0.14.6",
+    "streamlit>=1.59.1",
+    "yfinance>=1.5.2",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.2",
+]
