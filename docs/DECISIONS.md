@@ -52,3 +52,32 @@ a decision, add a later entry that references and supersedes it. Each entry uses
 - Rationale: the project targets reproduction by any reader. Alpha Vantage caps the free tier at 25
   calls per day `[Alpha Vantage free tier, 2026-08-10]`, Nasdaq Data Link moved relevant series
   behind payment, and Bloomberg and Refinitiv require institutional licensing.
+
+### 2026-08-10: adjusted close as the daily price value
+
+- Decision: use the yfinance auto-adjusted close as the single daily value per price series.
+- Alternatives considered: raw close, open, a volume-weighted average.
+- Rationale: the adjusted close accounts for splits and dividends and is the standard input for
+  log-return computation.
+
+### 2026-08-10: JKSE sector composition for the return contrast
+
+- Decision: define the energy sector as MEDC.JK, PGAS.JK, ADRO.JK, ITMG.JK, PTBA.JK, and the
+  consumer sector as UNVR.JK, ICBP.JK, INDF.JK, MYOR.JK, GGRM.JK.
+- Alternatives considered: an IDX sector index ticker, a wider constituent set, a free-float-weighted
+  basket.
+- Rationale: these are liquid large-cap constituents with continuous history across the sample
+  window. Membership is fixed here so the sector contrast in H2 is defined before estimation. Change
+  membership through a later entry, not by a silent edit.
+
+### 2026-08-10: BPS and BI ingested from pinned snapshots
+
+- Decision: ingest BPS CPI and trade balance, and Bank Indonesia policy rate and JISDOR, from
+  downloaded snapshot files parsed to parquet. Do not couple the build to the live endpoints.
+- Alternatives considered: the BPS WebAPI dynamic-data endpoint, and scraping the Bank Indonesia
+  table pages.
+- Rationale: the BPS consumer price index is published per city, with no single national series at
+  the WebAPI national domain, and the WebAPI data model takes per-domain and per-year parameters that
+  change between releases. A pinned snapshot with its sha256 and retrieval date recorded in the
+  manifest makes a rebuild verifiable. The BPS variable ids are 2 for the consumer price index and
+  498 for the trade balance value `[BPS WebAPI, 2026-08-10]`.

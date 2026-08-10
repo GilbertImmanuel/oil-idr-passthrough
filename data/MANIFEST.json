@@ -1,0 +1,137 @@
+{
+  "ADRO.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/ADRO.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:15+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1849,
+    "sha256": "fe1dd6981552ed41b4cc858c8b2b542195c632ac769b9384ffe0c9af8779f2c4"
+  },
+  "BZ=F": {
+    "source": "Yahoo",
+    "file": "data/raw/BZ_F.parquet",
+    "retrieved_at": "2026-08-10T14:08:12+00:00",
+    "first_date": "2019-01-02",
+    "last_date": "2026-08-10",
+    "row_count": 1914,
+    "sha256": "1025285b0b75d9cf6bab44765e16ffe96ca1bcc51cdf9bf4642c45ec59df2461"
+  },
+  "DCOILBRENTEU": {
+    "source": "FRED",
+    "file": "data/raw/DCOILBRENTEU.parquet",
+    "retrieved_at": "2026-08-10T14:08:12+00:00",
+    "first_date": "2019-01-02",
+    "last_date": "2026-08-03",
+    "row_count": 1923,
+    "sha256": "382f08db005532d0204e7174cd3e9216050afeda1a0901382825768457b97f7b"
+  },
+  "DX-Y.NYB": {
+    "source": "Yahoo",
+    "file": "data/raw/DX-Y.NYB.parquet",
+    "retrieved_at": "2026-08-10T14:08:13+00:00",
+    "first_date": "2019-01-02",
+    "last_date": "2026-08-10",
+    "row_count": 1913,
+    "sha256": "4c9760fc648fd85095fb4ee29259d26ba8b79f3cbe0f11f4270ae2dd9d1206eb"
+  },
+  "GGRM.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/GGRM.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:17+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1849,
+    "sha256": "79508ec297f7eef38ea414d2289fa2075d05848c627aec7e305ab4eb10bde396"
+  },
+  "ICBP.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/ICBP.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:16+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1849,
+    "sha256": "fe51cc1522c59202965cf96e5e82b01a06a54e66a86d3dcceca385c185d8e846"
+  },
+  "IDR=X": {
+    "source": "Yahoo",
+    "file": "data/raw/IDR_X.parquet",
+    "retrieved_at": "2026-08-10T14:08:13+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1979,
+    "sha256": "b845de86d2d68833202bf9ad1daf32609cf5cf37ed144cbfcedc71d7359d3d0d"
+  },
+  "INDF.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/INDF.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:17+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1850,
+    "sha256": "c2193186b3182297e6d553dfc1c224ae7e972e5307e00c208c8f0f90b294194b"
+  },
+  "ITMG.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/ITMG.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:15+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1850,
+    "sha256": "d12b04eebc7a00b3f0c7c5725a1444c36c43f91cf882693ada050a7882ebd6ea"
+  },
+  "MEDC.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/MEDC.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:14+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1850,
+    "sha256": "602bef3e7bfd0eafaec4d40a9745aa0bddc8a453fbb7fa0534574dbf8c361846"
+  },
+  "MYOR.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/MYOR.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:17+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1850,
+    "sha256": "1c304f448eb28132fc154dc48717246b50d02d7ee47606aeef63a459d3452947"
+  },
+  "PGAS.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/PGAS.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:14+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1849,
+    "sha256": "eea9276310aa47914259be2c1b2fb39919cedf89e9bd93abd32c78f72d55631a"
+  },
+  "PTBA.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/PTBA.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:16+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1849,
+    "sha256": "9c44321e99adeaad4aea5e8700091f85b11a2bb4fa98eb1096f1fd65379b3df3"
+  },
+  "UNVR.JK": {
+    "source": "Yahoo",
+    "file": "data/raw/UNVR.JK.parquet",
+    "retrieved_at": "2026-08-10T14:08:16+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-08-10",
+    "row_count": 1850,
+    "sha256": "bb9e2e75a61bbd3acb6a62256407f24dbc955a0a1b784879123d48886edf0590"
+  },
+  "^JKSE": {
+    "source": "Yahoo",
+    "file": "data/raw/_JKSE.parquet",
+    "retrieved_at": "2026-08-10T14:08:13+00:00",
+    "first_date": "2019-01-02",
+    "last_date": "2026-08-10",
+    "row_count": 1833,
+    "sha256": "4dc8207cc3401b002d16e830163ef3b10d1fb70b5a36efd2a4a09e40926732c8"
+  }
+}
