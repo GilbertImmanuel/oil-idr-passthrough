@@ -8,6 +8,15 @@
     "row_count": 1849,
     "sha256": "fe1dd6981552ed41b4cc858c8b2b542195c632ac769b9384ffe0c9af8779f2c4"
   },
+  "BPS_CPI": {
+    "source": "BPS var 2 Indeks Harga Konsumen (Umum)",
+    "file": "data/raw/BPS_CPI.parquet",
+    "retrieved_at": "2026-08-11T08:32:27+00:00",
+    "first_date": "2019-01-01",
+    "last_date": "2026-07-01",
+    "row_count": 91,
+    "sha256": "47bdcad132d72d06cab7510a9569a0c3dd47615c0669f2af4d30283da9fe02de"
+  },
   "BZ=F": {
     "source": "Yahoo",
     "file": "data/raw/BZ_F.parquet",
