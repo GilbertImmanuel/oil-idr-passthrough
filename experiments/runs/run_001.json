@@ -1,0 +1,37 @@
+{
+  "run_id": 1,
+  "timestamp": "2026-08-11T07:40:19+00:00",
+  "spec_hash": "5a780be460a4a67d11f21040b97dda138957f3979adbb18b29b0cd7f6de043ad",
+  "spec": {
+    "variables": [
+      "DCOILBRENTEU",
+      "DX-Y.NYB",
+      "IDR=X",
+      "^JKSE"
+    ],
+    "transform": "diff",
+    "lag_order": 1,
+    "ordering": [
+      "DCOILBRENTEU",
+      "DX-Y.NYB",
+      "^JKSE",
+      "IDR=X"
+    ],
+    "sample_window": [
+      "2019-01-01",
+      "2026-12-31"
+    ]
+  },
+  "oos_metric": 1.1015404291447495,
+  "bic": -36.814182957759364,
+  "diagnostics": {
+    "ljungbox_p": 8.971671541492384e-34,
+    "normality_p": 0.0,
+    "companion_min_modulus": 4.701511368073856,
+    "ljungbox_pass": false,
+    "normality_pass": false,
+    "stability_pass": true
+  },
+  "improved": true,
+  "kept": false
+}
