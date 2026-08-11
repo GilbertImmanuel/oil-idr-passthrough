@@ -81,3 +81,47 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   change between releases. A pinned snapshot with its sha256 and retrieval date recorded in the
   manifest makes a rebuild verifiable. The BPS variable ids are 2 for the consumer price index and
   498 for the trade balance value `[BPS WebAPI, 2026-08-10]`.
+
+### 2026-08-11: research question organized into tiers, D5 pre-specified
+
+- Decision: organize the research question into four tiers. Tier 1 confirmatory holds H1 to H3,
+  fixed before estimation with no re-specification. Tier 2 descriptive holds D1 to D6. Tier 3
+  magnitude holds M1 to M4. Tier 4 exploratory holds anything found during estimation, labeled
+  exploratory wherever reported. Record D5, the structural break in the IDR equation at the April
+  2026 Bank Indonesia anti-speculation effective date, as pre-specified before estimation.
+- Alternatives considered: a single flat hypothesis list; adding the break test after inspecting
+  residuals.
+- Rationale: tiering separates fixed confirmatory claims from descriptive and magnitude questions,
+  which keeps the confirmatory set small and the exploratory results labeled. Pre-specifying D5
+  fixes the break date in advance, since a break test added after inspecting residuals carries
+  different inferential weight.
+
+### 2026-08-11: intersection spine for the daily panel, union stored alongside
+
+- Decision: build the daily estimation panel on the intersection of the observed
+  trading dates across all daily series. Keep the union frame, with NaN on days a
+  market was closed and no forward-fill, alongside the intersection frame for
+  reference and robustness checks. Derive each series calendar from its own
+  observed dates rather than a holiday table.
+- Alternatives considered: a single named market calendar as the spine (IDX, FX,
+  or NYSE); a union panel forward-filled to a common daily grid; a market-calendar
+  dependency for the holiday sets.
+- Rationale: the intersection admits only dates on which every series traded, so
+  the estimation frame carries no imputed price and no forward-filled value on a
+  closed day. Empirical calendars avoid a hardcoded holiday table and an added
+  dependency, both of which drift between releases. The union frame retains the
+  dropped dates so the row loss is measurable (D6) and available for a robustness
+  comparison.
+
+### 2026-08-11: monthly mean as the primary daily-to-monthly aggregation
+
+- Decision: aggregate the daily series to monthly by the calendar-month mean for
+  the CPI-leg panel. Produce the month-end last observation as a second variant
+  for a robustness check. Do not forward-fill monthly CPI to daily frequency.
+- Alternatives considered: month-end last observation as the primary aggregation;
+  forward-filling CPI to daily to force a single-frequency daily VAR.
+- Rationale: the monthly mean uses every observed trading day in the month rather
+  than one end-of-month print, which reduces sensitivity to the final day value.
+  The month-end variant is retained so the aggregation choice can be tested.
+  Forward-filling CPI to daily is prohibited by the alignment plan because it
+  fabricates daily variation the source does not report.
