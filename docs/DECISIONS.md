@@ -125,3 +125,57 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   The month-end variant is retained so the aggregation choice can be tested.
   Forward-filling CPI to daily is prohibited by the alignment plan because it
   fabricates daily variation the source does not report.
+
+### 2026-08-11: Phase 3 run on daily series, CPI leg deferred
+
+- Decision: run Phase 3 on the daily series only. Defer the BPS CPI leg and the
+  monthly panels until the snapshot is provided.
+- Alternatives considered: block Phase 3 until the snapshot arrives; interpolate or
+  fabricate CPI values to proceed.
+- Rationale: the snapshot data/raw/snapshots/bps_cpi.csv is absent, and CPI is not
+  fabricated. D1 to D5 and the VAR specification are daily-based and complete without
+  CPI. The monthly panel and the CPI response questions H3 and M4 move to Phase 4,
+  pending the snapshot. The BPS ingest module and align.panel already skip the CPI
+  leg when the snapshot is missing, so no code path fabricates a value.
+
+### 2026-08-11: supF single-break for the D5 unknown-date test
+
+- Decision: test the unknown break date in D5 with a supF, or Quandt-Andrews,
+  single-break search over the interior 15 percent-trimmed sample, by ordinary least
+  squares on the IDR return equation.
+- Alternatives considered: full Bai-Perron multiple-break estimation via the ruptures
+  package; an untrimmed grid.
+- Rationale: statsmodels 0.14.6 has no Bai-Perron routine and ruptures is not a
+  project dependency. The supF single-break test covers the unknown-date case with the
+  standard 15 percent trim and adds no dependency. The supF reference distribution is
+  non-standard, so the argmax date is reported without a pointwise p-value. Add
+  ruptures and multiple-break estimation through a later entry if more than one break
+  is required.
+
+### 2026-08-11: VAR in differences from the D2 rank
+
+- Decision: estimate a VAR in first differences of the log price series. Set the
+  specification transformation to diff. Do not estimate a VECM in levels.
+- Alternatives considered: a VECM in levels with a cointegrating rank.
+- Rationale: D2 Johansen on the level set (DCOILBRENTEU, DX-Y.NYB, IDR=X, ^JKSE)
+  returned cointegration rank 0 by both the trace and maximum-eigenvalue statistics at
+  5 percent, n=1750. Rank 0 leaves no cointegrating relation to embed, so a VECM
+  reduces to a VAR in differences. The level set is the macro passthrough chain; the
+  ten sector tickers feed the H2 sector spread and are not part of the cointegration
+  system.
+
+### 2026-08-11: loop keep gate on whiteness and stability, normality reported only
+
+- Decision: gate the loop keep decision on residual whiteness by the Ljung-Box
+  portmanteau test and on companion-matrix stability. Report residual normality in
+  full, but do not gate on it.
+- Alternatives considered: gate on all three diagnostics, including the Jarque-Bera
+  normality test.
+- Rationale: daily log returns are leptokurtic, so Jarque-Bera rejects normality for
+  every specification, which would discard every run and make the out-of-sample
+  selection vacuous. Non-normal residuals leave the VAR point estimates consistent and
+  affect only exact small-sample inference. experiments/program.md names the Ljung-Box
+  test as the disqualifier. The normality statistic and p-value are recorded per run
+  and in the final report. On this sample the portmanteau rejected whiteness at every
+  lag order searched, so no run was kept and selection fell to the out-of-sample metric
+  with the whiteness failure disclosed in docs/SPECIFICATION.md.
