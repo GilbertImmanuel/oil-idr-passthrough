@@ -67,3 +67,67 @@ No runs recorded yet.
 - Diagnostics: Ljung-Box p=0.0000, normality p=0.0000, companion min modulus=1.6063 (fail)
 - Decision: discarded
 - Note: vars=4 lag=5 window=2019-01-01:2026-12-31
+
+## CPI leg (Phase 4)
+
+ARDL(p, q) in log differences on monthly inflation and Brent returns, selected on out-of-sample one-step forecast error. Run ids continue the append-only sequence. The Phase 3 VAR run count (5) is unchanged.
+
+### Run 6
+
+- Timestamp: 2026-08-12T06:36:27+00:00
+- Spec hash: 0fc5004cc0409667731976d75361d8d0f1549bb0d665becbbb364f66467bdbab
+- Out-of-sample metric: 1.712536
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.2372 (pass)
+- Decision: kept
+- Note: cpi-leg ARDL p=1 q=1 panel=monthly_panel_mean
+
+### Run 7
+
+- Timestamp: 2026-08-12T06:36:28+00:00
+- Spec hash: f05ca55d8c7cd1a468ea38cb6ed8bb74532888c12996ca3103fdd806609a3500
+- Out-of-sample metric: 1.701704
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.2666 (pass)
+- Decision: kept
+- Note: cpi-leg ARDL p=1 q=2 panel=monthly_panel_mean
+
+### Run 8
+
+- Timestamp: 2026-08-12T06:36:28+00:00
+- Spec hash: daf49084ead9d1d5e1f4ea29167ab9ca507969cbb55f7b96717393b513ed3344
+- Out-of-sample metric: 1.698463
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.2297 (pass)
+- Decision: kept
+- Note: cpi-leg ARDL p=1 q=3 panel=monthly_panel_mean
+
+### Run 9
+
+- Timestamp: 2026-08-12T06:36:28+00:00
+- Spec hash: 0df55eb01516046843a6cc11e4c844ff6e323095a480b168d632fb81eed35107
+- Out-of-sample metric: 1.745174
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.5646 (pass)
+- Decision: discarded
+- Note: cpi-leg ARDL p=2 q=1 panel=monthly_panel_mean
+
+### Run 10
+
+- Timestamp: 2026-08-12T06:36:28+00:00
+- Spec hash: e93ec165f96d5fa9e5fcad9ea1f16546d3d64b319cfb3362bf69b417fc9ac3da
+- Out-of-sample metric: 1.747116
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.5613 (pass)
+- Decision: discarded
+- Note: cpi-leg ARDL p=2 q=2 panel=monthly_panel_mean
+
+### Run 11
+
+- Timestamp: 2026-08-12T06:36:28+00:00
+- Spec hash: ee64bad7fa8de83bebf947165d76e21dce02099023cc8c0a9860597073c566b8
+- Out-of-sample metric: 1.752110
+- BIC: n/a
+- Diagnostics: Ljung-Box p=0.5858 (pass)
+- Decision: discarded
+- Note: cpi-leg ARDL p=2 q=3 panel=monthly_panel_mean

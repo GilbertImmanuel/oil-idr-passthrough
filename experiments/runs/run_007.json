@@ -1,0 +1,17 @@
+{
+  "run_id": 7,
+  "leg": "cpi",
+  "timestamp": "2026-08-12T06:36:28+00:00",
+  "spec": {
+    "p": 1,
+    "q": 2,
+    "panel": "monthly_panel_mean"
+  },
+  "oos_metric": 1.7017038434080753,
+  "diagnostics": {
+    "ljungbox_p": 0.266557336475402,
+    "ljungbox_pass": true
+  },
+  "improved": true,
+  "kept": true
+}
