@@ -179,3 +179,81 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   and in the final report. On this sample the portmanteau rejected whiteness at every
   lag order searched, so no run was kept and selection fell to the out-of-sample metric
   with the whiteness failure disclosed in docs/SPECIFICATION.md.
+
+### 2026-08-12: event-date selection rule for the Hormuz event study
+
+- Decision: fix the event list in data/sources/events/hormuz_events.csv by a written
+  rule. Within the daily panel window 2019-01-03 to 2026-08-03, a date enters when a
+  named financial or wire source reports a Hormuz-related oil supply-disruption event
+  tied to an oil-price move, in three classes: an in-Strait or Strait-adjacent tanker
+  attack or seizure; an Iranian closure declaration or threat naming the Strait; a
+  Persian Gulf oil-infrastructure attack the source prices as a Hormuz-region transit
+  risk. t=0 is the first trading day on or after the incident. The list holds 11 events.
+- Alternatives considered: an ad hoc date list; including Red Sea and Bab-el-Mandeb
+  Houthi shipping attacks; including general Iran-Israel escalation not tied to Hormuz
+  transit.
+- Rationale: a written rule with committed sources makes the event set reproducible and
+  fixes it before the abnormal-return computation. The Red Sea attacks are a different
+  chokepoint. The 2026-08-06 headlines in PROJECT_PLAN section 2 fall after the panel end
+  2026-08-03 and carry no post-event window, so they motivate the study and are excluded
+  from the computation. The count sits in the low teens, so the cross-event test carries
+  low power and the event study is reported as a supporting result (PROJECT_PLAN section
+  10). The rule and the excluded cases are also recorded in data/sources/events/README.md.
+
+### 2026-08-12: two alternative Cholesky orderings for the IRF sensitivity check
+
+- Decision: report the IDR=X response to a Brent shock under the SPECIFICATION.md primary
+  ordering (DCOILBRENTEU, DX-Y.NYB, ^JKSE, IDR=X) and two alternatives, the reverse
+  (IDR=X, ^JKSE, DX-Y.NYB, DCOILBRENTEU) and dollar-before-Brent (DX-Y.NYB, DCOILBRENTEU,
+  ^JKSE, IDR=X).
+- Alternatives considered: reporting only the primary ordering; enumerating all 24
+  permutations.
+- Rationale: the primary ordering places Brent first as the most exogenous global supply
+  variable and IDR=X last as the most endogenous small-open-economy price. The reverse
+  ordering inverts that recursive assumption to test whether IDR-first changes the
+  Brent-to-IDR response. The dollar-before-Brent ordering tests the oil-versus-dollar
+  exogeneity ambiguity, since global USD moves and oil moves are contemporaneously
+  entangled (PROJECT_PLAN section 10 confounding row). Two alternatives meet the
+  PROJECT_PLAN section 6 requirement without enumerating all permutations.
+
+### 2026-08-12: residual bootstrap for the IRF confidence bands
+
+- Decision: compute the orthogonalized IRF confidence bands with a residual (recursive)
+  bootstrap implemented in src/models/estimation.py, 1000 replications, percentile band.
+- Alternatives considered: the statsmodels IRAnalysis.errband_mc Monte Carlo band; the
+  asymptotic standard-error band.
+- Rationale: statsmodels errband_mc and irf_resim return a zero-variance band in this
+  install, every replication identical, so the built-in band is unusable. The residual
+  bootstrap resamples centered residuals, rebuilds the series with the estimated
+  coefficients and the actual first two rows, refits by ordinary least squares, and takes
+  percentiles of the orthogonalized path. The point path matches the statsmodels
+  orthogonalized IRF to 1e-5. PROJECT_PLAN section 6 requires at least 1000 replications.
+
+### 2026-08-12: ARDL over MIDAS for the CPI leg, in log differences
+
+- Decision: estimate the CPI leg as an ARDL(p, q) in log differences of the monthly CPI
+  index and the monthly-mean Brent price, by ordinary least squares on the lag matrix with
+  Newey-West standard errors. Select the lag pair on out-of-sample one-step forecast error,
+  primary panel monthly_panel_mean, robustness panel monthly_panel_last. The loop selected
+  ARDL(1, 3) over 6 logged CPI runs.
+- Alternatives considered: a MIDAS mixed-frequency model; ARDL in levels; selection by AIC
+  or BIC.
+- Rationale: the panels are already monthly, so a mixed-frequency MIDAS model adds a
+  dependency with no gain, and statsmodels has no MIDAS routine. Both level series are I(1)
+  (D1), so log differences give a stationary distributed-lag model. Selection on
+  out-of-sample error, not an information criterion or the Brent coefficient, follows the
+  program.md guardrails. The CPI-leg runs are logged in experiments/LOG.md continuing the
+  append-only run sequence; the Phase 3 VAR run count of 5 is unchanged.
+
+### 2026-08-12: CPI base-chaining splice months excluded from month-over-month inference
+
+- Decision: set the monthly CPI log difference to missing at the two base-change splice
+  months 2020-01 and 2024-01, so no ARDL estimation row uses them as the dependent or as a
+  lag.
+- Alternatives considered: keeping the splice-month changes in the estimation;
+  interpolating a value at the splice.
+- Rationale: level-matching at the base changes forces a zero month-over-month change at
+  2020-01 and 2024-01 (data/sources/cpi/README.md), which suppresses the true small
+  inflation of those two months. Excluding them removes the artificial values from the
+  month-over-month inference. Only those two monthly changes carry the chaining assumption;
+  all other months are unaffected.
