@@ -64,7 +64,9 @@ def test_load_or_fetch_caches_once_and_manifest_matches(tmp_store):
     assert len(entry["sha256"]) == 64
 
 
-def test_bps_snapshot_missing_raises(tmp_path, monkeypatch):
+def test_bps_snapshot_missing_raises(tmp_path, monkeypatch, tmp_store):
+    # tmp_store empties the parquet cache so fetch consults the snapshot instead
+    # of returning the committed data/raw/BPS_CPI.parquet before it looks.
     monkeypatch.setattr(bps, "SNAPSHOT_DIR", tmp_path / "snapshots")
     with pytest.raises(FileNotFoundError):
         bps.fetch("BPS_CPI")
