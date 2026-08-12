@@ -10,9 +10,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from models import descriptive
+from models import descriptive, estimation, event_study
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "experiments"))
+import cpi_loop  # noqa: E402
 import run_loop  # noqa: E402
 
 
@@ -56,3 +57,18 @@ def test_should_stop_on_consecutive_nonimproving():
     assert run_loop.should_stop(three_flat) is True
     two_flat = [{"improved": True}, {"improved": False}, {"improved": False}]
     assert run_loop.should_stop(two_flat) is False
+
+
+def test_event_car_recovers_zero_and_injected_jump():
+    # Market model, abnormal returns, and portfolio CAR against a synthetic panel.
+    event_study.demo()
+
+
+def test_cpi_leg_splice_exclusion_and_recovered_lag():
+    # Splice months absent from the ARDL rows, and a planted Brent lag recovered by OLS.
+    cpi_loop.demo()
+
+
+def test_estimation_irf_matches_and_bootstrap_band_nondegenerate():
+    # numpy orthogonalized IRF matches statsmodels, and the bootstrap band brackets it.
+    estimation.demo()
