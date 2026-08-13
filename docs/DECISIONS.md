@@ -257,3 +257,95 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   inflation of those two months. Excluding them removes the artificial values from the
   month-over-month inference. Only those two monthly changes carry the chaining assumption;
   all other months are unaffected.
+
+### 2026-08-13: commit the data/processed parquet artifacts for a no-network dashboard
+
+- Decision: un-gitignore data/processed and commit the model-ready parquet the dashboard reads
+  (prices, returns, irf, event_car_paths, event_car_scalar). Keep data/raw and data/interim
+  gitignored. The build step app/build_processed.py regenerates the processed frames from the
+  interim frames and the Phase 4 model functions.
+- Alternatives considered: keep data/processed gitignored, so the deployment carries no data and
+  the app rebuilds it at startup; rebuild every frame from source at runtime.
+- Rationale: the dashboard loads from data/processed only and makes no network call at runtime
+  (PROJECT_PLAN section 6). A Streamlit Community Cloud clone has no data/raw or data/interim, and
+  a rebuild from source needs the yfinance and FRED endpoints, which the no-network rule forbids.
+  Committing the processed parquet (sub-megabyte) is the exception to the PROJECT_PLAN section 4
+  gitignore rule required for the deployed app to run. The artifacts are reproducible from the
+  committed MANIFEST snapshots through the ingest, align, and build steps.
+
+### 2026-08-13: conditional-distribution neighborhood rule for the core visitor feature
+
+- Decision: the home page answers the core question by a conditional empirical distribution. For
+  a stated Brent daily move m (percent) and a half-width w (percentage points), select every
+  historical day whose Brent log return falls in [ln(1+m/100) - w/100, ln(1+m/100) + w/100], then
+  take the forward cumulative return of the equal-weight energy and consumer portfolios over the
+  next N trading days [t+1, t+N]. Drop days without a full forward window. Portfolios use the
+  frozen membership from docs/DECISIONS.md 2026-08-10.
+- Alternatives considered: a model-implied conditional distribution from the VAR; a sign-and-
+  magnitude bucket instead of a symmetric band; forward returns including day t.
+- Rationale: an empirical distribution over history states what the data show without a further
+  identifying assumption, and the page labels it a conditional correlation, not a forecast. The
+  symmetric band in log-return space matches the panel units and the reported Brent move. The
+  page displays the D3 unconditional Brent-IDR correlation 0.0089 and the D4 sign instability as
+  the conditional-correlation caveat, per PROJECT_PLAN section 6.
+
+### 2026-08-13: IRF viewer scales the one-standard-deviation response linearly
+
+- Decision: the IRF viewer scales the one-standard-deviation orthogonalized response and its 90
+  percent band by the shock multiplier and slices the horizon, reading the precomputed paths from
+  data/processed/irf.parquet. The build stores the primary ordering and the two alternatives.
+- Alternatives considered: re-running the residual bootstrap for each shock size and horizon at
+  runtime; storing only the primary ordering.
+- Rationale: the orthogonalized impulse response is linear in the shock through the moving-average
+  representation, so a k-fold shock scales the response and the band by k with no re-estimation. A
+  runtime bootstrap adds no information and would breach the no-network, no-estimation runtime
+  budget. Storing the two alternatives keeps the ordering sensitivity check (docs/DECISIONS.md
+  2026-08-12) available in the viewer.
+
+### 2026-08-13: event-study CAR paths derived in the build from the Phase 4 helpers
+
+- Decision: the build derives the per-day cumulative abnormal-return path for the energy and
+  consumer portfolios by reusing src/models/event_study.market_model, the frozen membership, and
+  the EST_LEN, GAP, and POST_WINDOW window constants, then writes the paths and the scalar CAR
+  table to data/processed. The scalar table comes from event_study.run.
+- Alternatives considered: adding a path function to src/models/event_study.py; recomputing the
+  market model inside the app at runtime.
+- Rationale: event_study.event_car returns the scalar window CAR, not the daily path the chart
+  needs. Reusing the public helpers keeps the path consistent with the Phase 4 scalar CAR, which
+  the build asserts at day POST_WINDOW, without modifying Phase 4 code. The app reads the parquet
+  and runs no model at runtime.
+
+### 2026-08-13: dark default and theme-aware charts through native Streamlit theming
+
+- Decision: set dark as the default dashboard theme in .streamlit/config.toml, and re-skin the
+  plotly charts from st.context.theme at runtime so the native Settings menu Light and Dark switch
+  drives the chart backgrounds. Chart styling is centralized in app/theme.py. The series explorer
+  gains an index-to-100 option that rebases each selected series to 100 at the range start.
+- Alternatives considered: a light default; a visible on-page dark-mode toggle that re-skins the
+  app chrome through injected CSS; leaving the series explorer on a shared linear axis.
+- Rationale: the native theme switch needs no CSS injection and stays stable across Streamlit
+  releases, and transparent theme-aware figures follow the active theme without a per-figure color
+  list. Reading st.context.theme is available in streamlit 1.59.1. Indexing to 100 fixes the
+  shared-axis scale problem, since Brent near 80, JKSE near 7000, and IDR near 16000 are not
+  comparable on one linear axis. The change is presentational and does not alter the models, the
+  data, or the questions the dashboard answers.
+
+### 2026-08-13: visible appearance toggle and st.navigation, supersedes the native-switch decision
+
+- Decision: supersede the 2026-08-13 native-switch decision above. Add a visible sidebar Dark and
+  Light toggle that re-themes the whole app by setting theme.base at runtime (st._config.set_option
+  plus st.rerun) and re-skins the plotly charts from the toggle state. Restructure the app to an
+  st.navigation router (app/streamlit_app.py) over view scripts in app/views, which sets Title Case
+  page titles and icons and renders the toggle once for every page. Dark stays the default through
+  .streamlit/config.toml and the toggle default. Chart styling stays centralized in app/theme.py.
+- Alternatives considered: keeping the native Settings-menu switch only (not discoverable, and no
+  on-page control); a visible toggle that re-skins the chrome through injected CSS (streamlit 1.59
+  exposes no theme CSS variables, so the override is fragile and unverifiable here); the auto
+  pages/ navigation (cannot rename the entrypoint label or add per-page icons).
+- Rationale: a probe confirmed st._config.set_option("theme.base", ...) plus st.rerun re-themes the
+  connected client both ways, with no CSS injection. st.context.theme does not reflect the runtime
+  override, so the charts read the toggle state instead. st._config.set_option is a private API and
+  mutates process-global config; that is acceptable for a single-viewer dashboard and is marked
+  with a ponytail comment in app/theme.py, to revisit if the deploy serves concurrent users with
+  independent themes. st.navigation is the native way to control page titles and icons and to place
+  the toggle once for all pages. The change stays presentational.
