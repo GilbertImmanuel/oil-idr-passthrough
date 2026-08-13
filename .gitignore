@@ -20,5 +20,9 @@ data/processed/*
 !data/interim/.gitkeep
 !data/processed/.gitkeep
 
+# Processed parquet is committed so the dashboard runs with no network (docs/DECISIONS.md
+# 2026-08-13). Raw and interim stay ignored and are rebuilt from source.
+!data/processed/*.parquet
+
 # Local planning document (not committed)
 PROJECT_PLAN.md
