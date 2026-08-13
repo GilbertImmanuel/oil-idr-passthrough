@@ -11,8 +11,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import data
+import theme
 
-st.set_page_config(page_title="Event study", layout="wide")
 st.title("Event study: Hormuz events and sector CAR")
 
 paths = data.load_event_paths()
@@ -38,24 +38,33 @@ chosen = st.selectbox(
     "Event (t=0 date)", event_dates, format_func=lambda d: d.date().isoformat()
 )
 
+colors = {"energy": theme.ENERGY_COLOR, "consumer": theme.CONSUMER_COLOR}
 sub = paths[paths["event_date"] == chosen]
 fig = go.Figure()
 for portfolio in ["energy", "consumer"]:
     leg = sub[sub["portfolio"] == portfolio].sort_values("day")
-    fig.add_trace(go.Scatter(x=leg["day"], y=leg["cum_ar"], name=portfolio, mode="lines+markers"))
+    fig.add_trace(
+        go.Scatter(
+            x=leg["day"], y=leg["cum_ar"], name=portfolio, mode="lines+markers",
+            line={"color": colors[portfolio]},
+        )
+    )
+fig.add_hline(y=0, line_dash="dot", line_color=theme.ZERO_LINE_COLOR)
 fig.update_layout(
+    title=f"Cumulative abnormal return, {chosen.date().isoformat()}",
     xaxis_title="trading days since t=0",
     yaxis_title="cumulative abnormal return (log points)",
-    height=460,
+    hovermode="x unified",
 )
+theme.style_fig(fig)
 st.plotly_chart(fig, use_container_width=True)
 
 row = scalar[scalar["event_date"] == chosen].iloc[0]
-st.caption(
-    f"Event {chosen.date().isoformat()}: energy CAR {row['energy_car']:.4f}, consumer CAR "
-    f"{row['consumer_car']:.4f}, energy minus consumer {row['spread']:.4f}, over the "
-    "five-day window."
-)
+c1, c2, c3 = st.columns(3)
+c1.metric("Energy CAR", f"{row['energy_car']:.4f}")
+c2.metric("Consumer CAR", f"{row['consumer_car']:.4f}")
+c3.metric("Energy minus consumer", f"{row['spread']:.4f}")
+st.caption("CAR is over the post-event window, days 0 to 5 inclusive.")
 
 st.subheader("Per-event CAR across the event list")
 table = scalar.copy()

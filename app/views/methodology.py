@@ -6,5 +6,4 @@ import streamlit as st
 
 import data
 
-st.set_page_config(page_title="Methodology", layout="wide")
 st.markdown(data.load_methodology())

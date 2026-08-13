@@ -1,0 +1,5 @@
+# Dark as the default theme for every visitor (docs/DECISIONS.md 2026-08-13). The native
+# Settings menu switches Light and Dark; charts read st.context.theme and re-skin to match.
+[theme]
+base = "dark"
+primaryColor = "#4C9BE8"

@@ -16,12 +16,19 @@ sys.path.insert(0, str(APP_DIR))
 import build_processed  # noqa: E402
 
 import compute  # noqa: E402
+import theme  # noqa: E402
 from models import event_study  # noqa: E402
 
 
 def test_compute_selection_and_scaling():
     # Band selection, forward-window length, and linear IRF scaling.
     compute.demo()
+
+
+def test_theme_template_mapping():
+    # Dark maps to the plotly_dark template, every other theme to plotly.
+    assert theme.template_for("dark") == "plotly_dark"
+    assert theme.template_for("light") == "plotly"
 
 
 def test_conditional_window_respects_horizon_and_band():

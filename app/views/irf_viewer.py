@@ -12,8 +12,8 @@ import streamlit as st
 
 import compute
 import data
+import theme
 
-st.set_page_config(page_title="IRF viewer", layout="wide")
 st.title("IRF viewer: IDR=X response to a Brent shock")
 
 irf = data.load_irf()
@@ -48,17 +48,31 @@ fig.add_trace(
 fig.add_trace(
     go.Scatter(
         x=leg["horizon"], y=leg["band_low"], name="90 percent band", mode="lines",
-        line={"width": 0}, fill="tonexty", fillcolor="rgba(100,100,100,0.2)",
+        line={"width": 0}, fill="tonexty", fillcolor=theme.band_color(),
     )
 )
-fig.add_trace(go.Scatter(x=leg["horizon"], y=leg["response"], name="response", mode="lines"))
-fig.add_hline(y=0, line_dash="dot", line_color="gray")
+fig.add_trace(
+    go.Scatter(
+        x=leg["horizon"], y=leg["response"], name="response", mode="lines",
+        line={"color": theme.RESPONSE_COLOR},
+    )
+)
+fig.add_hline(y=0, line_dash="dot", line_color=theme.ZERO_LINE_COLOR)
 fig.update_layout(
+    title=f"IDR=X response, {ordering} ordering, {shock:.1f} SD shock",
     xaxis_title="horizon (trading days)",
     yaxis_title="IDR=X response (log-return units)",
-    height=460,
+    hovermode="x unified",
 )
+theme.style_fig(fig)
 st.plotly_chart(fig, use_container_width=True)
+
+resp = leg[leg["horizon"] >= 1]
+peak = resp.loc[resp["response"].abs().idxmax()]
+c1, c2, c3 = st.columns(3)
+c1.metric("Peak response", f"{peak['response']:.5f}")
+c2.metric("Peak horizon (days)", int(peak["horizon"]))
+c3.metric(f"Cumulative at h={horizon}", f"{float(leg['cum'].iloc[-1]):.5f}")
 
 st.markdown(
     "**Conditional-correlation caveat.** Identification is recursive (Cholesky), so the response "

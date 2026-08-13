@@ -314,3 +314,38 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   needs. Reusing the public helpers keeps the path consistent with the Phase 4 scalar CAR, which
   the build asserts at day POST_WINDOW, without modifying Phase 4 code. The app reads the parquet
   and runs no model at runtime.
+
+### 2026-08-13: dark default and theme-aware charts through native Streamlit theming
+
+- Decision: set dark as the default dashboard theme in .streamlit/config.toml, and re-skin the
+  plotly charts from st.context.theme at runtime so the native Settings menu Light and Dark switch
+  drives the chart backgrounds. Chart styling is centralized in app/theme.py. The series explorer
+  gains an index-to-100 option that rebases each selected series to 100 at the range start.
+- Alternatives considered: a light default; a visible on-page dark-mode toggle that re-skins the
+  app chrome through injected CSS; leaving the series explorer on a shared linear axis.
+- Rationale: the native theme switch needs no CSS injection and stays stable across Streamlit
+  releases, and transparent theme-aware figures follow the active theme without a per-figure color
+  list. Reading st.context.theme is available in streamlit 1.59.1. Indexing to 100 fixes the
+  shared-axis scale problem, since Brent near 80, JKSE near 7000, and IDR near 16000 are not
+  comparable on one linear axis. The change is presentational and does not alter the models, the
+  data, or the questions the dashboard answers.
+
+### 2026-08-13: visible appearance toggle and st.navigation, supersedes the native-switch decision
+
+- Decision: supersede the 2026-08-13 native-switch decision above. Add a visible sidebar Dark and
+  Light toggle that re-themes the whole app by setting theme.base at runtime (st._config.set_option
+  plus st.rerun) and re-skins the plotly charts from the toggle state. Restructure the app to an
+  st.navigation router (app/streamlit_app.py) over view scripts in app/views, which sets Title Case
+  page titles and icons and renders the toggle once for every page. Dark stays the default through
+  .streamlit/config.toml and the toggle default. Chart styling stays centralized in app/theme.py.
+- Alternatives considered: keeping the native Settings-menu switch only (not discoverable, and no
+  on-page control); a visible toggle that re-skins the chrome through injected CSS (streamlit 1.59
+  exposes no theme CSS variables, so the override is fragile and unverifiable here); the auto
+  pages/ navigation (cannot rename the entrypoint label or add per-page icons).
+- Rationale: a probe confirmed st._config.set_option("theme.base", ...) plus st.rerun re-themes the
+  connected client both ways, with no CSS injection. st.context.theme does not reflect the runtime
+  override, so the charts read the toggle state instead. st._config.set_option is a private API and
+  mutates process-global config; that is acceptable for a single-viewer dashboard and is marked
+  with a ponytail comment in app/theme.py, to revisit if the deploy serves concurrent users with
+  independent themes. st.navigation is the native way to control page titles and icons and to place
+  the toggle once for all pages. The change stays presentational.

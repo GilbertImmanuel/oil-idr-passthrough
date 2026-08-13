@@ -16,6 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 PROCESSED = REPO_ROOT / "data" / "processed"
 MANIFEST_PATH = REPO_ROOT / "data" / "MANIFEST.json"
 METHODOLOGY_PATH = REPO_ROOT / "docs" / "METHODOLOGY.md"
+NEWS_PATH = REPO_ROOT / "data" / "sources" / "news.csv"
 
 
 @st.cache_data
@@ -46,6 +47,13 @@ def load_event_scalar() -> pd.DataFrame:
 @st.cache_data
 def load_methodology() -> str:
     return METHODOLOGY_PATH.read_text(encoding="utf-8")
+
+
+@st.cache_data
+def load_news() -> pd.DataFrame:
+    """Motivating news links, retrieved 2026-08-10 (PROJECT_PLAN section 2). Motivation, not
+    evidence: every quantitative claim in the project cites a data series, not a headline."""
+    return pd.read_csv(NEWS_PATH, dtype=str)
 
 
 @st.cache_data
