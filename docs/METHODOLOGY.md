@@ -115,8 +115,83 @@ Deliberate omissions that require sources not ingested, planned as a v2.0 extens
 - Fuel subsidy expenditure.
 - Pass-through to retail Pertamina prices.
 
-## Results
+## Final specification
 
-Not yet populated. The integration-order table, event-study cumulative abnormal returns, impulse
-responses, variance decompositions, and the numbered Findings block are added after estimation. Each
-reported result carries a point estimate, an interval, and a horizon.
+Selected by the Karpathy Loop on out-of-sample one-step forecast error, then re-estimated once on
+the full sample. Full detail: docs/SPECIFICATION.md.
+
+- Variables: DCOILBRENTEU, DX-Y.NYB, IDR=X, ^JKSE. Series: [FRED:DCOILBRENTEU, 2026-08-10]
+  [Yahoo:DX-Y.NYB, 2026-08-10] [Yahoo:IDR=X, 2026-08-10] [Yahoo:^JKSE, 2026-08-10].
+- Transform: first difference of the log price. D2 Johansen returned cointegration rank 0 on the
+  level set (docs/DESCRIPTIVES.md D2), so a VECM reduces to a VAR in differences (docs/DECISIONS.md
+  2026-08-11).
+- Lag order: 2.
+- Cholesky ordering: DCOILBRENTEU, DX-Y.NYB, ^JKSE, IDR=X.
+- Sample window: 2019-01-01 to 2026-12-31, 1747 observations after differencing
+  [docs/SPECIFICATION.md, 2026-08-12].
+- Selection: out-of-sample one-step forecast error over 5 logged specification runs
+  (experiments/LOG.md), never the p-value or the coefficient sign of the variable of interest.
+
+The CPI leg is estimated separately as an ARDL(1, 3) in log differences of the monthly CPI index on
+the monthly Brent return and its lags, by ordinary least squares with Newey-West standard errors,
+selected on out-of-sample error over 6 logged CPI runs (docs/DECISIONS.md 2026-08-12,
+docs/ESTIMATION.md). Do not forward-fill monthly CPI to daily frequency.
+
+## Cholesky ordering justification
+
+Identification is recursive. The orthogonalized responses are conditional correlations, not causal
+effects. The ordering encodes the contemporaneous exogeneity assumption, so the sensitivity check
+reports the IDR=X response under the primary ordering and two alternatives (docs/DECISIONS.md
+2026-08-12, docs/ESTIMATION.md).
+
+- Primary, DCOILBRENTEU, DX-Y.NYB, ^JKSE, IDR=X: Brent is ordered first as the most exogenous global
+  supply variable, and IDR=X last as the most endogenous small-open-economy price. Peak IDR=X
+  response to a one-standard-deviation Brent shock: -0.000312 at horizon 1, 90 percent band
+  [-0.000604, 0.000005] [docs/ESTIMATION.md, 2026-08-12].
+- Reverse (IDR first), IDR=X, ^JKSE, DX-Y.NYB, DCOILBRENTEU: inverts the recursive assumption to test
+  whether IDR-first changes the Brent-to-IDR response. Peak response -0.000208, 90 percent band
+  [-0.000433, 0.000030] [docs/ESTIMATION.md, 2026-08-12].
+- Dollar before Brent, DX-Y.NYB, DCOILBRENTEU, ^JKSE, IDR=X: tests the oil-versus-dollar exogeneity
+  ambiguity, since global USD moves and oil moves are contemporaneously entangled (PROJECT_PLAN
+  section 10). Peak response -0.000310, 90 percent band [-0.000586, -0.000009] [docs/ESTIMATION.md,
+  2026-08-12].
+
+The peak response stays negative in sign and near zero across all three orderings, and the Brent
+share of IDR=X forecast error variance stays at or below 0.002293 through horizon 20 under each
+(docs/ESTIMATION.md). The Brent-to-IDR reading does not depend on the ordering choice.
+
+## Diagnostic results
+
+Full-sample residual diagnostics of the selected VAR [docs/SPECIFICATION.md, 2026-08-12].
+
+| diagnostic | statistic | p-value | pass |
+|---|---|---|---|
+| Ljung-Box whiteness (portmanteau, 12 lags) | 396.6504 | 0.0000 | no |
+| Residual normality (Jarque-Bera) | 379631.7375 | 0.0000 | no |
+| Companion stability (min characteristic-root modulus) | 2.4851 | n/a | yes |
+
+The portmanteau test rejected residual whiteness at every lag order searched, so no loop run met the
+keep gate and selection fell to the out-of-sample metric with the whiteness failure disclosed
+(docs/DECISIONS.md 2026-08-11 loop keep-gate entry). Read the impulse-response bands against that
+failure and the 5 logged runs. Residual normality is reported but not gated: daily log returns are
+leptokurtic, so Jarque-Bera rejects normality for every specification; non-normal residuals leave the
+VAR point estimates consistent and affect only exact small-sample inference. The companion matrix is
+stable, since every characteristic-root modulus exceeds 1 and the binding minimum is 2.4851.
+
+## Findings
+
+1. Selected VAR: 4 variables at lag 2 in log returns, re-estimated on 1747 observations, chosen over
+   5 logged runs [docs/SPECIFICATION.md, 2026-08-12].
+2. IDR=X peak response to a one-standard-deviation Brent shock is -0.000312 at horizon 1, 90 percent
+   band [-0.000604, 0.000005]; the sign and near-zero magnitude hold across the two alternative
+   orderings [docs/ESTIMATION.md, 2026-08-12].
+3. Brent share of IDR=X forecast error variance is at or below 0.002293 through horizon 20
+   [docs/ESTIMATION.md, 2026-08-12].
+4. Residual diagnostics: Ljung-Box whiteness p=0.0000 (fail), Jarque-Bera normality p=0.0000 (fail),
+   minimum characteristic-root modulus 2.4851 (stable) [docs/SPECIFICATION.md, 2026-08-12].
+5. Event study over 11 Hormuz events: energy CAAR 0.007252, consumer CAAR -0.006070, spread 0.013322
+   (t=1.04), n=11, low power at that count [docs/ESTIMATION.md, 2026-08-12].
+6. CPI leg ARDL(1, 3): no Brent lag from 0 to 3 months is detectable at the 90 percent level
+   [docs/ESTIMATION.md, 2026-08-12].
+7. Confirmatory verdicts: H1 falsified under the pre-registered condition, H2 sign-consistent but low
+   power, H3 unsupported [docs/ESTIMATION.md, 2026-08-12].
