@@ -349,3 +349,36 @@ a decision, add a later entry that references and supersedes it. Each entry uses
   with a ponytail comment in app/theme.py, to revisit if the deploy serves concurrent users with
   independent themes. st.navigation is the native way to control page titles and icons and to place
   the toggle once for all pages. The change stays presentational.
+
+### 2026-08-14: news links are a dashboard-only feature, not documentation
+
+- Decision: keep the motivating news links solely in the Streamlit app, sourced from
+  data/sources/news.csv and rendered in the Home page expander. Do not add the news to the README or
+  any docs file, and do not reference it there. Supersede the PROJECT_PLAN.md section 2 note that the
+  news links belong in the README motivation section.
+- Alternatives considered: reproducing the news table in the README motivation section per
+  PROJECT_PLAN section 2; citing the news list from docs/METHODOLOGY.md.
+- Rationale: the news is motivation, not evidence, and every quantitative claim in the repository
+  cites a data series, not a headline (PROJECT_PLAN section 2). The dashboard Home page already
+  renders the list with the conditional-correlation caveat, so a second copy in the README duplicates
+  the content and adds a maintenance point. Keeping one committed source (news.csv) read by one view
+  (app/views/home.py) leaves a single place to update.
+
+### 2026-08-14: news entries use fixed event-specific sources, not live-update pages
+
+- Decision: source each news entry from a fixed, event-specific, non-updating page, a dated article
+  or an official release tied to one event whose content does not change after publication. Replace
+  the four live-update entries (two Bloomberg and one CNBC stock-market-today-live-updates pages and
+  one Yahoo Finance crypto-prices-today live page) with dated articles: two Al Jazeera Strait of
+  Hormuz oil reports [Al Jazeera, 2026-08-10], the July payrolls report [Yahoo Finance, 2026-08-07],
+  and the post-payrolls Fed rate-hold report [Yahoo Finance, 2026-08-07]. Keep the source and date
+  pair as the STYLE tag on every entry, keep each article date on or before the app retrieval date
+  2026-08-10, and verify each URL resolves to the described event.
+- Alternatives considered: leaving the live-update URLs in place; citing the official Bureau of Labor
+  Statistics release at news.release/empsit.nr0.htm for the payrolls entry.
+- Rationale: a live-update page (a stock-market-today-live-updates URL) rewrites its content hourly,
+  so the stated topic goes stale within hours of retrieval and a reader cannot confirm the entry
+  against the page later. A dated article fixes the content at one event. The Bureau of Labor
+  Statistics empsit.nr0.htm endpoint always serves the most recent month, so it is also non-fixed;
+  the dated news article reports the same July 2026 figures at a stable URL. The four replacements
+  were fetched and confirmed to report the described event.
