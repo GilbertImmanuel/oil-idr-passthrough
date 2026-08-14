@@ -5,6 +5,8 @@ horizon, along the chain Brent crude to the US dollar index to IDR/USD to Jakart
 sector returns to consumer price inflation (CPI). Results are conditional correlations, not causal
 effects.
 
+Live dashboard: https://oil-idr-passthrough.streamlit.app/
+
 ## Research question
 
 Estimate the response of Indonesian financial variables following a shock to the Brent crude price,
